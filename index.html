@@ -8,26 +8,37 @@
         :root { --primary: #2e7d32; --gold: #fbc02d; --blue: #1565c0; --purple: #8e24aa; --pink: #ec407a; --orange: #ff9800; --bg: #f0f2f5; }
         body { font-family: 'Pretendard', sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; color: #333; }
         .card { background: white; width: 100%; max-width: 480px; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; box-sizing: border-box; }
-        h1 { color: var(--primary); font-size: 24px; margin: 0 0 15px 0; }
-        .status-tag { font-size: 11px; font-weight: bold; margin-bottom: 20px; display: inline-block; padding: 6px 14px; border-radius: 50px; background: #eee; transition: 0.3s; }
+        h1 { color: var(--primary); font-size: 24px; margin: 0 0 10px 0; }
+        
+        .dday-container { background: #e8f5e9; padding: 10px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #c8e6c9; }
+        .dday-title { font-size: 13px; color: #2e7d32; font-weight: bold; margin-bottom: 3px; }
+        .dday-timer { font-size: 18px; font-weight: 800; color: #1b5e20; letter-spacing: -0.5px; }
+
+        .status-tag { font-size: 11px; font-weight: bold; margin-bottom: 20px; display: inline-block; padding: 6px 14px; border-radius: 50px; background: #eee; }
         .status-success { background: #e8f5e9; color: #2e7d32; }
+        
         .search-box { margin-bottom: 25px; }
         input { width: 100%; padding: 16px; border: 2px solid #ddd; border-radius: 15px; font-size: 17px; outline: none; box-sizing: border-box; text-align: center; }
         .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-bottom: 10px; }
         .btn-full { grid-column: span 2; }
-        button { padding: 16px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; transition: 0.2s; }
+        button { padding: 16px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; transition: 0.2s; }
         button:active { transform: scale(0.96); opacity: 0.9; }
+        
         .bg-green { background: var(--primary); }
         .bg-gold { background: var(--gold); color: #333; }
         .bg-blue { background: var(--blue); }
         .bg-pink { background: var(--pink); }
         .bg-purple { background: var(--purple); }
-        .bg-orange { background: var(--orange); font-size: 17px; padding: 18px; }
+        .bg-orange { background: var(--orange); }
+        .bg-navy { background: #1a237e; }
+
         #displayArea { width: 100%; max-width: 480px; display: none; }
         .content-box { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-top: 20px; text-align: left; }
+        .busan-box { background: #e3f2fd; border: 2px solid #1e88e5; padding: 20px; border-radius: 20px; margin-top: 20px; }
         .fortune-box { background: #fffde7; border: 2px dashed #fbc02d; padding: 20px; border-radius: 20px; margin-top: 20px; line-height: 1.7; }
         .highlight { color: #d32f2f; font-weight: bold; }
-        .busan-title { color: #e65100; font-weight: bold; font-size: 15px; margin-bottom: 5px; display: block; }
+        .info-label { font-size: 14px; color: #666; font-weight: bold; display: block; margin-bottom: 5px; }
+        .info-value { font-size: 19px; color: #1a237e; font-weight: 800; margin-bottom: 15px; display: block; }
         .lotto-container { margin: 12px 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; }
         .lotto-ball { display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background: #ffca28; color: #333; font-weight: bold; font-size: 14px; border: 1.5px solid #ffa000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     </style>
@@ -36,13 +47,14 @@
 
 <div class="card">
     <h1>🌲 마초62회 통합 포털</h1>
-    <span id="loadStatus" class="status-tag">⏳ 실시간 데이터 연동 중...</span>
-    
-    <div class="search-box">
-        <input type="text" id="nameInput" placeholder="이름을 입력하세요">
+    <div class="dday-container">
+        <div class="dday-title">🚢 신나는 부산여행 D-Day</div>
+        <div id="countdown" class="dday-timer">계산 중...</div>
     </div>
-
+    <span id="loadStatus" class="status-tag">⏳ 실시간 데이터 연동 중...</span>
+    <div class="search-box"><input type="text" id="nameInput" placeholder="이름을 입력하세요"></div>
     <div class="btn-group">
+        <button class="bg-navy btn-full" style="font-size: 17px; padding: 18px;" onclick="showBusanTrip()">🌊 신나는 부산여행 (나의 조/룸메)</button>
         <button class="bg-green btn-full" onclick="showFeeInfo()">💰 나의 연회비 확인</button>
         <button class="bg-gold" onclick="showList('perfect')">✨ 정회원 명단</button>
         <button class="bg-blue" onclick="showList('onestep')">🏃 한걸음만 더</button>
@@ -53,26 +65,39 @@
 </div>
 
 <div id="displayArea">
-    <div id="birthSection" class="content-box" style="display:none; border: 2px solid var(--orange);">
-        <h3 style="margin-top:0; color:var(--orange);">🎂 생일 등록 (최초 1회)</h3>
-        <input type="number" id="birthInput" placeholder="6자리 (예: 640520)">
-        <select id="calendarType" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ddd; margin:10px 0;">
-            <option value="양력">양력</option><option value="음력">음력</option>
-        </select>
-        <button class="bg-orange" style="width:100%;" onclick="saveBirth()">등록하고 운세보기</button>
-    </div>
+    <div id="busanContent" class="busan-box" style="display:none;"></div>
     <div id="infoContent" class="content-box" style="display:none;"></div>
     <div id="fortuneContent" class="fortune-box" style="display:none;"></div>
     <div id="listContent" class="content-box" style="display:none;"></div>
+    <div id="birthSection" class="content-box" style="display:none; border: 2px solid var(--orange);">
+        <h3 style="margin-top:0; color:var(--orange);">🎂 생일 등록 (최초 1회)</h3>
+        <input type="number" id="birthInput" placeholder="6자리 (예: 640520)">
+        <select id="calendarType" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ddd; margin:10px 0;"><option value="양력">양력</option><option value="음력">음력</option></select>
+        <button class="bg-orange" style="width:100%;" onclick="saveBirth()">등록하고 운세보기</button>
+    </div>
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxI7Ueot59vP493aD2AUvsof8nlFNYi4F7eM0Bt6hBdJ2AbtjWEY-wkG7aQBJ34aS8w/exec"; 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyixRWFpbvHw7OVmMpXYUyLzYBH0H6O3MtqFcId3XNaHosOF_Z5LMSscUGyzr7YBfIk/exec"; 
     let memberData = [];
     let commentData = [];
     let currentUser = null;
 
+    function updateCountdown() {
+        const targetDate = new Date("April 17, 2026 09:00:00").getTime();
+        const now = new Date().getTime();
+        const diff = targetDate - now;
+        // 수정: 카운트다운 텍스트 변경
+        if (diff < 0) { document.getElementById("countdown").innerText = "마초들의 신나는 부산여행이 시작되었습니다! 🚢"; return; }
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        document.getElementById("countdown").innerText = `${days}일 ${hours}시간 ${minutes}분 ${seconds}초`;
+    }
+
     window.onload = async () => {
+        setInterval(updateCountdown, 1000);
         try {
             const res = await fetch(SCRIPT_URL);
             const data = await res.json();
@@ -86,19 +111,63 @@
 
     function findUser() {
         const name = document.getElementById('nameInput').value.trim();
-        if(!name) { alert("이름을 입력해주세요!"); return null; }
-        const activeUsers = memberData.filter(u => u.비활성 !== "비활성");
-        const user = activeUsers.find(u => u.성명 === name || u.이름 === name);
-        if(!user) alert("명단에 없습니다.");
+        if(!name) { alert("이름을 먼저 입력해주세요!"); return null; }
+        const user = memberData.find(u => (u.성명 === name || u.이름 === name) && u.비활성 !== "비활성");
+        if(!user) alert("명단에 없거나 비활성 회원입니다.");
         return user;
     }
 
     function resetDisplay() {
         document.getElementById('displayArea').style.display = "block";
+        document.getElementById('busanContent').style.display = "none";
         document.getElementById('infoContent').style.display = "none";
         document.getElementById('fortuneContent').style.display = "none";
         document.getElementById('listContent').style.display = "none";
         document.getElementById('birthSection').style.display = "none";
+    }
+
+    function showBusanTrip() {
+        currentUser = findUser(); if(!currentUser) return;
+        resetDisplay();
+        const bBox = document.getElementById('busanContent');
+        bBox.style.display = "block";
+
+        if(currentUser.부산여행 !== '참석') {
+            bBox.innerHTML = `<div style="text-align:center; padding:20px;"><h3 style="color:#d32f2f;">🚨 여행 미신청 상태</h3><p><b>${currentUser.성명} 친구!</b><br>부산 여행 신청이 확인되지 않았네.<br><span class="highlight">입금 후 총무에게 연락하게!</span></p></div>`;
+            return;
+        }
+
+        const myGroup = currentUser.여행조;
+        let groupMembersList = [];
+        if (myGroup) {
+            // [중요 수정]: 본인(currentUser.성명)을 포함하여 같은 조원 전체를 추출
+            const groupMembers = memberData
+                .filter(u => u.여행조 === myGroup)
+                .map(u => {
+                    // 한재민 등 본인 이름일 경우 (나)를 붙이고 강조
+                    if (u.성명 === currentUser.성명) {
+                        return `<b style="color:#1a237e;">${u.성명}(나)</b>`;
+                    }
+                    return u.성명;
+                });
+            
+            groupMembersList = groupMembers;
+        }
+
+        // 수정: 내부 결과창 제목 변경
+        bBox.innerHTML = `
+            <div style="text-align:center; margin-bottom:15px; border-bottom:1px solid #bbdefb; padding-bottom:10px;">
+                <h3 style="margin:0; color:#1a237e;">🛳️ 신나는 부산여행 안내</h3>
+            </div>
+            <span class="info-label">🤝 나의 룸메이트</span>
+            <span class="info-value">✨ ${currentUser.룸메 || '배정 중'}</span>
+            <span class="info-label">🚩 우리 조 (소속)</span>
+            <span class="info-value">🔥 ${myGroup ? myGroup + '조' : '배정 중'}</span>
+            <div style="background:white; padding:12px; border-radius:12px; font-size:14px; border:1px solid #e1f5fe;">
+                <span style="color:#1a237e; font-weight:bold;">👥 우리 조원들:</span><br>
+                <span style="color:#444;">${groupMembersList.length > 0 ? groupMembersList.join(", ") : '조원 명단을 불러오는 중...'}</span>
+            </div>
+        `;
     }
 
     function showFeeInfo() {
@@ -134,63 +203,21 @@
     }
 
     function showFortune() {
-        const fBox = document.getElementById('fortuneContent');
-        fBox.style.display = "block";
+        const fBox = document.getElementById('fortuneContent'); fBox.style.display = "block";
         const today = new Date();
         const dateSeed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
         const nameSeed = currentUser.성명.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
         const finalSeed = dateSeed + nameSeed + 62;
-
-        const luckMsgs = [
-            "뜻밖의 기쁜 소식이 들려올 운세입니다! 🍀", "재물운이 들어와 있네요. 커피 한 잔 사셔도 좋습니다. ☕",
-            "자신감을 가지세요! 모든 일이 술술 풀리는 마법 같은 날입니다. 💪", "가는 곳마다 환영받는 날입니다. 😊",
-            "생각지도 못한 귀인을 만나 큰 도움을 얻을 운세입니다. ✨", "친구들의 연락이 빗발쳐 즐거운 하루가 됩니다. 📞",
-            "가벼운 산책으로 에너지를 보충해 보세요. 🏃", "모든 일이 뜻대로 이루어지는 최고의 날입니다! 🌲",
-            "새로운 도전을 시작하기에 아주 좋은 기운입니다. 🚀", "깜짝 놀랄 행운이 문 앞에 도착해 있습니다. 🎁"
-        ];
-
-        let busanLuckMsgs = currentUser.부산여행 === '참석' ? 
-            ["부산 해운대의 기운이 자네의 대운을 불러올 거야! 🌊", "참석 결정은 신의 한 수! 부산에서 주인공이 될 거야! 🌟"] :
-            ["부산행 버스를 타는 순간 인생의 막혔던 운이 뚫릴걸세! 🚌", "해운대 바다를 보지 않으면 행운을 놓칠 수도 있어! 지금 신청하게! 🌊"];
-
-        const menus = ["돼지국밥", "밀면", "부산어묵", "씨앗호떡", "해물짬뽕", "제육볶음", "전복삼계탕"];
-        const colors = ["청록색", "황금색", "빨간색", "보라색", "하늘색", "하얀색"];
-
-        // 파트너 매칭 로직 (이성 원칙 및 연예인 매칭 반영)
-        const activeFriends = memberData.filter(u => u.비활성 !== "비활성" && u.성명 !== currentUser.성명);
-        let partnerText = "";
+        const luckMsgs = ["뜻밖의 기쁜 소식이 들려올 운세입니다! 🍀", "재물운이 들어와 있네요. ☕", "자신감을 가지세요! 💪", "가는 곳마다 환영받는 날입니다. 😊"];
+        const menus = ["돼지국밥", "밀면", "부산어묵", "씨앗호떡", "해물짬뽕"];
         
-        if (currentUser.성명 === '송계수') partnerText = "💖 천생연분 영원한 파트너 전영주 💖";
-        else if (currentUser.성명 === '전영주') partnerText = "💖 천생연분 영원한 파트너 송계수 💖";
-        else {
-            let pool = activeFriends.filter(u => u.성별 !== currentUser.성별 && u.성명 !== '송계수' && u.성명 !== '전영주');
-            
-            // 여성이 부족한 경우 유명 연예인 매칭 추가
-            if (currentUser.성별 === '남' && pool.length < 5) {
-                const celebrities = ["김혜수", "전지현", "김태희", "박보영", "김하늘", "송혜교", "아이유", "한효주", "박신혜", "이효리"];
-                const celebName = celebrities[finalSeed % celebrities.length];
-                partnerText = `<span class="highlight">🌟 ${celebName} (스페셜 매칭) 🌟</span>`;
-            } else {
-                const luckyPartner = pool[finalSeed % (pool.length || activeFriends.length)];
-                partnerText = `<span class="highlight">${luckyPartner ? luckyPartner.성명 : '마초 친구'}</span>`;
-            }
-        }
-
         fBox.innerHTML = `
             <div style="text-align:right; font-size:12px; color:#999;">📅 ${today.toLocaleDateString()}</div>
-            <h3 style="color:var(--orange);">🔮 ${currentUser.성명} 친구의 오늘의 운세</h3>
-            <p style="font-size:16px; font-weight:bold; color:#333;">"${luckMsgs[finalSeed % luckMsgs.length]}"</p>
-            <div style="background:rgba(230,81,0,0.05); padding:12px; border-radius:12px; border-left:4px solid #e65100; margin:15px 0;">
-                <span class="busan-title">📍 부산쪽 기운 감지</span>
-                <p style="margin:0; font-size:14px;">${busanLuckMsgs[finalSeed % busanLuckMsgs.length]}</p>
-            </div>
-            <p>💪 마초 파워: <span class="highlight">${(finalSeed % 11) + 90}%</span></p>
-            <p>🌟 행운의 파트너: ${partnerText}</p>
-            <p>🎨 행운의 색상: <b>${colors[finalSeed % colors.length]}</b></p>
+            <h3 style="color:var(--orange); margin-top:0;">🔮 오늘의 운세</h3>
+            <p><b>"${luckMsgs[finalSeed % luckMsgs.length]}"</b></p>
             <div style="margin:20px 0; padding:15px; background:#fff; border-radius:15px; border:1px solid #eee; text-align:center;">
                 <p style="font-size:14px; margin-bottom:10px; font-weight:bold; color:#666;">🍀 행운 숫자 (로또):</p>
                 <div class="lotto-container">${getLottoNumbers(finalSeed).map(n=>`<span class="lotto-ball">${n}</span>`).join('')}</div>
-                <p style="font-size:12px; color:#d32f2f; margin-top:10px; font-weight:bold;">" 당첨 시 10%를 마초기금으로 기부해야 합니다 "</p>
             </div>
             <p>🍴 추천 메뉴: <span style="font-weight:bold; color:var(--primary);">${menus[finalSeed % menus.length]}</span></p>
         `;
