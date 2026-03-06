@@ -5,240 +5,331 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마초62회 통합 포털</title>
     <style>
-        :root { --primary: #2e7d32; --gold: #fbc02d; --blue: #1565c0; --purple: #8e24aa; --pink: #ec407a; --orange: #ff9800; --bg: #f0f2f5; }
-        body { font-family: 'Pretendard', sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; color: #333; }
-        .card { background: white; width: 100%; max-width: 480px; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; box-sizing: border-box; }
-        h1 { color: var(--primary); font-size: 24px; margin: 0 0 10px 0; }
+        :root { --primary: #2e7d32; --gold: #fbc02d; --blue: #1565c0; --purple: #8e24aa; --pink: #ec407a; --orange: #ff9800; --bg: #f0f2f5; --navy: #1a237e; --teal: #00897b; }
+        body { font-family: 'Pretendard', sans-serif; background: var(--bg); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; color: #333; }
+        .card { background: white; width: 100%; max-width: 480px; padding: 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; box-sizing: border-box; }
+        h1 { color: var(--primary); font-size: 22px; margin: 0 0 15px 0; letter-spacing: -1px; }
+        .dday-container { background: #e8f5e9; padding: 10px; border-radius: 15px; margin-bottom: 5px; border: 1px solid #c8e6c9; }
+        .dday-timer { font-size: 18px; font-weight: 800; color: #1b5e20; }
         
-        .dday-container { background: #e8f5e9; padding: 10px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #c8e6c9; }
-        .dday-title { font-size: 13px; color: #2e7d32; font-weight: bold; margin-bottom: 3px; }
-        .dday-timer { font-size: 18px; font-weight: 800; color: #1b5e20; letter-spacing: -0.5px; }
+        .status-tag { font-size: 11px; font-weight: bold; margin-bottom: 15px; display: inline-block; padding: 6px 14px; border-radius: 50px; background: #eee; color: #888; }
+        .status-success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
 
-        .status-tag { font-size: 11px; font-weight: bold; margin-bottom: 20px; display: inline-block; padding: 6px 14px; border-radius: 50px; background: #eee; }
-        .status-success { background: #e8f5e9; color: #2e7d32; }
-        
-        .search-box { margin-bottom: 25px; }
-        input { width: 100%; padding: 16px; border: 2px solid #ddd; border-radius: 15px; font-size: 17px; outline: none; box-sizing: border-box; text-align: center; }
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-bottom: 10px; }
+        .section-box { background: #f8f9fa; padding: 12px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #eee; width: 100%; box-sizing: border-box; }
+        .section-title { font-size: 15px; font-weight: 800; color: #333; text-align: left; margin-bottom: 10px; padding-left: 5px; border-left: 4px solid var(--primary); }
+
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
         .btn-full { grid-column: span 2; }
-        button { padding: 16px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; transition: 0.2s; }
+        button { padding: 12px 5px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 14px; color: white; transition: 0.2s; }
         button:active { transform: scale(0.96); opacity: 0.9; }
         
-        .bg-green { background: var(--primary); }
-        .bg-gold { background: var(--gold); color: #333; }
-        .bg-blue { background: var(--blue); }
-        .bg-pink { background: var(--pink); }
-        .bg-purple { background: var(--purple); }
-        .bg-orange { background: var(--orange); }
-        .bg-navy { background: #1a237e; }
+        .bg-navy { background: var(--navy); } .bg-orange { background: var(--orange); } .bg-teal { background: var(--teal); }
+        .bg-green { background: var(--primary); } .bg-gold { background: var(--gold); color: #333; } .bg-blue { background: var(--blue); } 
+        .bg-pink { background: var(--pink); } .bg-purple { background: var(--purple); }
 
-        #displayArea { width: 100%; max-width: 480px; display: none; }
-        .content-box { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-top: 20px; text-align: left; }
-        .busan-box { background: #e3f2fd; border: 2px solid #1e88e5; padding: 20px; border-radius: 20px; margin-top: 20px; }
-        .fortune-box { background: #fffde7; border: 2px dashed #fbc02d; padding: 20px; border-radius: 20px; margin-top: 20px; line-height: 1.7; }
-        .highlight { color: #d32f2f; font-weight: bold; }
-        .info-label { font-size: 14px; color: #666; font-weight: bold; display: block; margin-bottom: 5px; }
-        .info-value { font-size: 19px; color: #1a237e; font-weight: 800; margin-bottom: 15px; display: block; }
-        .lotto-container { margin: 12px 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; }
-        .lotto-ball { display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background: #ffca28; color: #333; font-weight: bold; font-size: 14px; border: 1.5px solid #ffa000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        #displayArea { width: 100%; max-width: 480px; display: none; margin-bottom: 50px; }
+        .content-box { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-top: 15px; text-align: left; }
+        
+        .train-table { width: 100%; font-size: 11px; border-collapse: collapse; margin-top: 8px; }
+        .train-table th { background: #f0f0f0; padding: 5px; border: 1px solid #ddd; }
+        .train-table td { border: 1px solid #ddd; padding: 5px; text-align: center; }
+        .lotto-ball { display: inline-block; width: 30px; height: 30px; line-height: 30px; text-align: center; border-radius: 50%; background: #ffca28; color: #333; font-weight: bold; font-size: 13px; margin: 2px; border: 1px solid #ffa000; }
+        input { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 15px; font-size: 17px; text-align: center; margin-bottom: 10px; box-sizing: border-box; }
+
+        #noticeModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); }
+        .modal-content { background-color: white; margin: 20% auto; padding: 25px; border-radius: 25px; width: 85%; max-width: 400px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); animation: slideDown 0.4s; }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { font-size: 18px; font-weight: bold; color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .modal-body { font-size: 15px; line-height: 1.6; color: #444; margin-bottom: 20px; white-space: pre-wrap; text-align: left; }
+        .modal-close { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; }
     </style>
 </head>
 <body>
 
+<div id="noticeModal">
+    <div class="modal-content">
+        <div class="modal-header">📢 마초62회 공지사항</div>
+        <div id="noticeBody" class="modal-body"></div>
+        <button class="modal-close" onclick="closeNotice()">확인했습니다</button>
+    </div>
+</div>
+
 <div class="card">
     <h1>🌲 마초62회 통합 포털</h1>
     <div class="dday-container">
-        <div class="dday-title">🚢 신나는 부산여행 D-Day</div>
-        <div id="countdown" class="dday-timer">계산 중...</div>
+        <div id="countdown" class="dday-timer">데이터 연결 중...</div>
     </div>
+    
     <span id="loadStatus" class="status-tag">⏳ 실시간 데이터 연동 중...</span>
-    <div class="search-box"><input type="text" id="nameInput" placeholder="이름을 입력하세요"></div>
-    <div class="btn-group">
-        <button class="bg-navy btn-full" style="font-size: 17px; padding: 18px;" onclick="showBusanTrip()">🌊 신나는 부산여행 (나의 조/룸메)</button>
-        <button class="bg-green btn-full" onclick="showFeeInfo()">💰 나의 연회비 확인</button>
-        <button class="bg-gold" onclick="showList('perfect')">✨ 정회원 명단</button>
-        <button class="bg-blue" onclick="showList('onestep')">🏃 한걸음만 더</button>
-        <button class="bg-pink" onclick="window.open('https://forms.gle/qXRdScWhR64Nw5pdA')">✍️ 응원글 남기기</button>
-        <button class="bg-purple" onclick="showComments()">💬 응원글 보기</button>
-        <button class="bg-orange btn-full" onclick="showFortuneProcess()">🔮 오늘의 운세 보기</button>
+    
+    <input type="text" id="nameInput" placeholder="이름을 입력하세요">
+
+    <div class="section-box">
+        <div class="section-title">🚢 부산여행</div>
+        <div class="menu-grid">
+            <button class="bg-navy" onclick="showMyBusan()">내정보(탑승역)</button>
+            <button class="bg-orange" onclick="showBusanList()">부산원정대</button>
+            <button class="bg-teal" onclick="showSchedule()">여행일정</button>
+            <button class="bg-gold" onclick="showSponsors()">협찬친구</button>
+        </div>
+    </div>
+
+    <div class="section-box">
+        <div class="section-title">💰 마초회비</div>
+        <div class="menu-grid">
+            <button class="bg-green" onclick="showMyFee()">내정보(회비)</button>
+            <button class="bg-gold" onclick="showList('perfect')">정회원 명단</button>
+            <button class="bg-blue btn-full" onclick="showList('onestep')">🏃 한걸음만 더 (30~50미만)</button>
+        </div>
+    </div>
+
+    <div class="section-box">
+        <div class="section-title">✨ 소통 및 운세</div>
+        <div class="menu-grid">
+            <button class="bg-pink" onclick="window.open('https://forms.gle/qXRdScWhR64Nw5pdA')">응원글 남기기</button>
+            <button class="bg-purple" onclick="showComments()">응원글 보기</button>
+            <button class="bg-orange btn-full" style="height:55px; font-size:16px;" onclick="showFortune()">🔮 오늘의 운세 보기</button>
+        </div>
     </div>
 </div>
 
 <div id="displayArea">
-    <div id="busanContent" class="busan-box" style="display:none;"></div>
-    <div id="infoContent" class="content-box" style="display:none;"></div>
-    <div id="fortuneContent" class="fortune-box" style="display:none;"></div>
-    <div id="listContent" class="content-box" style="display:none;"></div>
-    <div id="birthSection" class="content-box" style="display:none; border: 2px solid var(--orange);">
-        <h3 style="margin-top:0; color:var(--orange);">🎂 생일 등록 (최초 1회)</h3>
-        <input type="number" id="birthInput" placeholder="6자리 (예: 640520)">
-        <select id="calendarType" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ddd; margin:10px 0;"><option value="양력">양력</option><option value="음력">음력</option></select>
-        <button class="bg-orange" style="width:100%;" onclick="saveBirth()">등록하고 운세보기</button>
-    </div>
+    <div id="resultContent" class="content-box"></div>
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyixRWFpbvHw7OVmMpXYUyLzYBH0H6O3MtqFcId3XNaHosOF_Z5LMSscUGyzr7YBfIk/exec"; 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwUidMiHIHIr5gGtLQvafEFrjl-Wba068zoU3ISfirNFffABbVUTZ_6NrCmqof2nYhM/exec"; 
+    
     let memberData = [];
     let commentData = [];
-    let currentUser = null;
-
-    function updateCountdown() {
-        const targetDate = new Date("April 17, 2026 09:00:00").getTime();
-        const now = new Date().getTime();
-        const diff = targetDate - now;
-        // 수정: 카운트다운 텍스트 변경
-        if (diff < 0) { document.getElementById("countdown").innerText = "마초들의 신나는 부산여행이 시작되었습니다! 🚢"; return; }
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        document.getElementById("countdown").innerText = `${days}일 ${hours}시간 ${minutes}분 ${seconds}초`;
-    }
 
     window.onload = async () => {
         setInterval(updateCountdown, 1000);
         try {
             const res = await fetch(SCRIPT_URL);
             const data = await res.json();
-            memberData = data.fees;
-            commentData = data.comments;
+            memberData = data.fees.filter(u => u.비활성 !== "비활성");
+            commentData = data.comments || [];
+            
             const status = document.getElementById('loadStatus');
             status.innerText = "✅ 실시간 데이터 연동 성공";
             status.className = "status-tag status-success";
-        } catch(e) { document.getElementById('loadStatus').innerText = "❌ 연결 실패"; }
+            
+            // 공지사항 팝업 처리
+            if (data.notice && data.notice.trim() !== "" && !data.notice.includes("확인해주세요")) { 
+                openNotice(data.notice); 
+            }
+        } catch(e) { 
+            document.getElementById('loadStatus').innerText = "❌ 데이터 연동 실패";
+            console.error(e); 
+        }
     };
+
+    function openNotice(msg) {
+        document.getElementById('noticeBody').innerText = msg;
+        document.getElementById('noticeModal').style.display = "block";
+    }
+    function closeNotice() {
+        document.getElementById('noticeModal').style.display = "none";
+    }
+
+    function updateCountdown() {
+        const target = new Date("April 17, 2026 09:00:00").getTime();
+        const diff = target - new Date().getTime();
+        if (diff < 0) { document.getElementById("countdown").innerText = "부산 여행 중! 🚢"; return; }
+        const d = Math.floor(diff / (1000*60*60*24));
+        const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+        const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+        const s = Math.floor((diff % (1000*60)) / 1000);
+        document.getElementById("countdown").innerText = `🚢 부산행 ${d}일 ${h}:${m}:${s}`;
+    }
 
     function findUser() {
         const name = document.getElementById('nameInput').value.trim();
-        if(!name) { alert("이름을 먼저 입력해주세요!"); return null; }
-        const user = memberData.find(u => (u.성명 === name || u.이름 === name) && u.비활성 !== "비활성");
-        if(!user) alert("명단에 없거나 비활성 회원입니다.");
+        if(!name) { alert("이름을 입력해주세요."); return null; }
+        const user = memberData.find(u => u.성명 === name);
+        if(!user) alert("명단에 없습니다.");
         return user;
     }
 
-    function resetDisplay() {
+    function render(html) {
         document.getElementById('displayArea').style.display = "block";
-        document.getElementById('busanContent').style.display = "none";
-        document.getElementById('infoContent').style.display = "none";
-        document.getElementById('fortuneContent').style.display = "none";
-        document.getElementById('listContent').style.display = "none";
-        document.getElementById('birthSection').style.display = "none";
+        document.getElementById('resultContent').innerHTML = html;
+        window.scrollTo({ top: document.getElementById('displayArea').offsetTop - 20, behavior: 'smooth' });
     }
 
-    function showBusanTrip() {
-        currentUser = findUser(); if(!currentUser) return;
-        resetDisplay();
-        const bBox = document.getElementById('busanContent');
-        bBox.style.display = "block";
+    function showMyBusan() {
+        const u = findUser(); if(!u) return;
 
-        if(currentUser.부산여행 !== '참석') {
-            bBox.innerHTML = `<div style="text-align:center; padding:20px;"><h3 style="color:#d32f2f;">🚨 여행 미신청 상태</h3><p><b>${currentUser.성명} 친구!</b><br>부산 여행 신청이 확인되지 않았네.<br><span class="highlight">입금 후 총무에게 연락하게!</span></p></div>`;
+        // 여행 미참석자일 경우 특별 메시지 띄우기
+        if (u.부산여행 !== "참석") {
+            render(`
+                <h3 style="color:var(--navy); text-align:center;">🛳️ ${u.성명} 친구 부산정보</h3>
+                <div style="background:#fff3e0; padding:25px 15px; border-radius:15px; border:2px dashed var(--orange); text-align:center;">
+                    <p style="font-size:20px; font-weight:bold; color:#e65100; margin:0;">"친구야, 부산여행 같이가자~"</p>
+                    <p style="font-size:14px; color:#666; margin-top:10px;">아직 신청 내역이 없어. 얼른 합류해줘! 😉</p>
+                </div>
+            `);
             return;
         }
 
-        const myGroup = currentUser.여행조;
-        let groupMembersList = [];
-        if (myGroup) {
-            // [중요 수정]: 본인(currentUser.성명)을 포함하여 같은 조원 전체를 추출
-            const groupMembers = memberData
-                .filter(u => u.여행조 === myGroup)
-                .map(u => {
-                    // 한재민 등 본인 이름일 경우 (나)를 붙이고 강조
-                    if (u.성명 === currentUser.성명) {
-                        return `<b style="color:#1a237e;">${u.성명}(나)</b>`;
-                    }
-                    return u.성명;
-                });
-            
-            groupMembersList = groupMembers;
-        }
+        // 여행 참석자일 경우 조원 정보 가져오기
+        const myGroup = u.여행조 || "";
+        const groupMembers = memberData.filter(m => m.여행조 === myGroup)
+            .map(m => m.성명 === u.성명 ? `<b>${m.성명}(나)</b>` : m.성명);
 
-        // 수정: 내부 결과창 제목 변경
-        bBox.innerHTML = `
-            <div style="text-align:center; margin-bottom:15px; border-bottom:1px solid #bbdefb; padding-bottom:10px;">
-                <h3 style="margin:0; color:#1a237e;">🛳️ 신나는 부산여행 안내</h3>
+        render(`
+            <h3 style="color:var(--navy); text-align:center;">🛳️ ${u.성명} 친구 부산정보</h3>
+            <div style="background:#e3f2fd; padding:15px; border-radius:15px; border:2px solid var(--navy);">
+                <p style="font-size:18px;">🚆 <b>기차 탑승역: <span style="color:#d32f2f;">${u.탑승역 || '서울역'}</span></b></p>
+                <p>🤝 나의 룸메이트: <b>${u.룸메 || '배정중'}</b></p>
+                <p>🚩 소속 조: <b>${myGroup ? myGroup+'조' : '미배정'}</b></p>
+                <div style="background:#f0f7ff; padding:12px; border-radius:12px; font-size:14px; border:1px solid #bbdefb; margin-top:10px;">
+                    <span style="font-weight:bold; color:#1a237e;">👥 우리 조원:</span><br>
+                    <span>${groupMembers.length > 0 ? groupMembers.join(", ") : '조원을 찾을 수 없습니다.'}</span>
+                </div>
             </div>
-            <span class="info-label">🤝 나의 룸메이트</span>
-            <span class="info-value">✨ ${currentUser.룸메 || '배정 중'}</span>
-            <span class="info-label">🚩 우리 조 (소속)</span>
-            <span class="info-value">🔥 ${myGroup ? myGroup + '조' : '배정 중'}</span>
-            <div style="background:white; padding:12px; border-radius:12px; font-size:14px; border:1px solid #e1f5fe;">
-                <span style="color:#1a237e; font-weight:bold;">👥 우리 조원들:</span><br>
-                <span style="color:#444;">${groupMembersList.length > 0 ? groupMembersList.join(", ") : '조원 명단을 불러오는 중...'}</span>
+        `);
+    }
+
+    function showBusanList() {
+        const attendees = memberData.filter(u => u.부산여행 === "참석");
+        let html = `<h3>🚩 부산원정대 명단 (${attendees.length}명)</h3>`;
+        const groups = [...new Set(attendees.map(u => u.여행조 || "미정"))].sort();
+        groups.forEach(g => {
+            html += `<div style="background:#f1f3f5; padding:10px; border-radius:10px; margin-bottom:10px; border-left:5px solid var(--navy);">
+                <div style="font-weight:bold; color:var(--navy); margin-bottom:5px;">👥 ${g}조</div>`;
+            attendees.filter(u => (u.여행조 || "미정") === g).forEach(m => {
+                html += `<div style="font-size:13px; display:flex; justify-content:space-between; margin-bottom:3px;">
+                    <span><b>${m.성명}</b> (룸메: ${m.룸메 || '-'})</span> <span>📍 ${m.탑승역 || '서울'}</span>
+                </div>`;
+            });
+            html += `</div>`;
+        });
+        render(html);
+    }
+
+    function showSchedule() {
+        render(`
+            <h3 style="color:var(--teal); text-align:center;">📅 신나는 마초62 부산여행 일정표</h3>
+            <div style="font-size:14px; line-height:1.7;">
+                <b style="color:var(--primary);">[ 1일차 ]</b><br>
+                • 08:12 서울역 출발 - KTX[부산행] - 부산역 이동 (KTX #121)<br>
+                • 부산역 도착 - 연계버스 - 식당으로 이동 / <b>중식</b><br>
+                • <b>해동용궁사 관람</b><br>
+                • <b>해운대 관람 [누리마루/동백섬 산책]</b><br>
+                • <b>태종대 해상유람선 여행</b><br>
+                • <b>석식</b> 후 <b>부산 관광호텔 체크인 및 단합대회</b><br><br>
+                <b style="color:var(--blue);">[ 2일차 ]</b><br>
+                • <b>호텔 조식 후 용두산공원 주변 산책</b><br>
+                • <b>송도 케이블카 [왕복 탑승] - 바닷가 구름산책로 산책</b><br>
+                • <b>중식</b> 및 <b>국제시장, 자갈치시장 자유시간</b><br>
+                • 부산역 도착 - 열차탑승 준비 - <b>석식 (도시락)</b><br>
+                • 17:50 부산역 출발 (KTX 126) → 21:11 서울역 도착<br>
+                <p style="font-size:11px; color:red;">* 현지상황 변화로 변경될 수 있습니다.</p>
             </div>
-        `;
+            <h4 style="margin:10px 0 5px; font-size:13px;">🚄 하행 시간표 (KTX #121)</h4>
+            <table class="train-table"><tr><th>서울</th><th>영등포</th><th>수원</th><th>대전</th><th>대구</th><th>부산</th></tr>
+            <tr><td>08:12</td><td>08:23</td><td>08:46</td><td>09:57</td><td>10:41</td><td>11:33</td></tr></table>
+            <h4 style="margin:10px 0 5px; font-size:13px;">🚄 상행 시간표 (KTX #126)</h4>
+            <table class="train-table"><tr><th>부산</th><th>대전</th><th>수원</th><th>영등포</th><th>서울</th></tr>
+            <tr><td>17:50</td><td>19:24</td><td>20:34</td><td>20:59</td><td>21:11</td></tr></table>
+        `);
     }
 
-    function showFeeInfo() {
-        currentUser = findUser(); if(!currentUser) return;
-        resetDisplay();
-        const info = document.getElementById('infoContent');
-        info.style.display = "block";
-        info.innerHTML = `<h3>💰 ${currentUser.성명} 친구 정보</h3><p>회비 누적: <b>${currentUser.합계금액}만원</b></p><p>부산여행: <span class="highlight">${currentUser.부산여행 || '미정'}</span></p>`;
+    function showSponsors() {
+        const sponsors = memberData.filter(u => u.부산찬조 && u.부산찬조 !== "0");
+        let html = `<h3>🤝 협찬 친구들</h3>`;
+        sponsors.sort((a,b) => parseFloat(b.부산찬조) - parseFloat(a.부산찬조)).forEach(u => {
+            html += `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px dashed #ddd;"><span>✨ ${u.성명} 친구</span><b>${u.부산찬조}만원</b></div>`;
+        });
+        render(html);
     }
 
-    function showFortuneProcess() {
-        currentUser = findUser(); if(!currentUser) return;
-        resetDisplay();
-        if(!currentUser.생년월일) document.getElementById('birthSection').style.display = "block";
-        else showFortune();
-    }
-
-    async function saveBirth() {
-        const birth = document.getElementById('birthInput').value;
-        const type = document.getElementById('calendarType').value;
-        if(birth.length !== 6) { alert("6자리로 입력하세요."); return; }
-        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ name: currentUser.성명, birth: birth, type: type }) });
-        currentUser.생년월일 = birth; currentUser.음양 = type;
-        document.getElementById('birthSection').style.display = "none";
-        showFortune();
-    }
-
-    function getLottoNumbers(seed) {
-        const nums = [];
-        const random = () => { const x = Math.sin(seed++) * 10000; return x - Math.floor(x); };
-        while(nums.length < 7) { const n = Math.floor(random() * 45) + 1; if(!nums.includes(n)) nums.push(n); }
-        return nums.sort((a, b) => a - b);
-    }
-
-    function showFortune() {
-        const fBox = document.getElementById('fortuneContent'); fBox.style.display = "block";
-        const today = new Date();
-        const dateSeed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
-        const nameSeed = currentUser.성명.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-        const finalSeed = dateSeed + nameSeed + 62;
-        const luckMsgs = ["뜻밖의 기쁜 소식이 들려올 운세입니다! 🍀", "재물운이 들어와 있네요. ☕", "자신감을 가지세요! 💪", "가는 곳마다 환영받는 날입니다. 😊"];
-        const menus = ["돼지국밥", "밀면", "부산어묵", "씨앗호떡", "해물짬뽕"];
-        
-        fBox.innerHTML = `
-            <div style="text-align:right; font-size:12px; color:#999;">📅 ${today.toLocaleDateString()}</div>
-            <h3 style="color:var(--orange); margin-top:0;">🔮 오늘의 운세</h3>
-            <p><b>"${luckMsgs[finalSeed % luckMsgs.length]}"</b></p>
-            <div style="margin:20px 0; padding:15px; background:#fff; border-radius:15px; border:1px solid #eee; text-align:center;">
-                <p style="font-size:14px; margin-bottom:10px; font-weight:bold; color:#666;">🍀 행운 숫자 (로또):</p>
-                <div class="lotto-container">${getLottoNumbers(finalSeed).map(n=>`<span class="lotto-ball">${n}</span>`).join('')}</div>
-            </div>
-            <p>🍴 추천 메뉴: <span style="font-weight:bold; color:var(--primary);">${menus[finalSeed % menus.length]}</span></p>
-        `;
+    function showMyFee() {
+        const u = findUser(); if(!u) return;
+        render(`<h3>💰 ${u.성명} 회비 정보</h3>
+            <p>회비 누계: <b style="font-size:18px; color:var(--primary);">${u.합계금액 || 0}만원</b></p>
+            <p>등급: <b>${parseInt(u.합계금액)>=50 ? '✨ 정회원' : '🏃 한걸음만 더'}</b></p>
+        `);
     }
 
     function showList(type) {
-        resetDisplay(); const list = document.getElementById('listContent'); list.style.display = "block";
-        const filtered = memberData.filter(u => type === 'perfect' ? Number(u.합계금액) >= 50 : Number(u.합계금액) >= 40 && Number(u.합계금액) < 50);
-        list.innerHTML = `<h3>${type==='perfect'?'✨ 정회원':'🏃 한걸음더'} (${filtered.length}명)</h3>`;
-        filtered.sort((a,b)=>a.성명.localeCompare(b.성명)).forEach(u => {
-            list.innerHTML += `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;"><span>${u.성명}</span><b>${u.합계금액}만원</b></div>`;
+        const filtered = memberData.filter(u => {
+            const val = parseInt(u.합계금액 || 0);
+            return type === 'perfect' ? val >= 50 : (val >= 30 && val < 50);
         });
+        let html = `<h3>${type==='perfect'?'✨ 정회원 명단':'🏃 한걸음만 더'} (${filtered.length}명)</h3>`;
+        filtered.sort((a,b)=>a.성명.localeCompare(b.성명)).forEach(u => {
+            html += `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;"><span>${u.성명}</span><b>${u.합계금액}만원</b></div>`;
+        });
+        render(html);
+    }
+
+    function showFortune() {
+        const u = findUser(); if(!u) return;
+        const today = new Date();
+        const seed = today.getDate() + u.성명.charCodeAt(0) + today.getMonth();
+
+        const generalMsgs = [
+            "뜻밖의 기쁜 소식이 들려올 운세입니다! 🍀", 
+            "재물운이 아주 좋습니다. 자신감을 가지세요! ☕", 
+            "마음먹은 일이 순조롭게 풀리는 기분 좋은 날입니다. 😊",
+            "가는 곳마다 환영받고 귀인을 만날 운세입니다. 🤝"
+        ];
+
+        const busanMsgs = [
+            "부산 바다의 파도처럼 큰 행운이 밀려오는 하루입니다! 🌊",
+            "송도 케이블카처럼 기분이 높게 비상할 운세입니다! 🚠",
+            "자갈치 시장의 활기찬 기운이 당신에게 가득합니다! 🐟",
+            "용두산 공원의 정기를 받아 모든 일이 술술 풀립니다! ⛰️",
+            "해운대 백사장처럼 넓고 풍요로운 행운이 따릅니다! ✨"
+        ];
+
+        const foods = ["돼지국밥 🍲", "시원한 밀면 🍜", "뜨끈한 부산어묵 🍢", "달콤한 씨앗호떡 🍯", "얼큰한 해물짬뽕 🦐", "쫄깃한 곰장어 구이 🐍"];
+        
+        let nums = [];
+        let s = seed;
+        const pseudoRandom = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+        while(nums.length < 7) { 
+            let n = Math.floor(pseudoRandom() * 45) + 1; 
+            if(!nums.includes(n)) nums.push(n); 
+        }
+        nums.sort((a,b)=>a-b);
+
+        render(`
+            <div style="text-align:right; font-size:12px; color:#999; margin-bottom:10px;">📅 ${today.toLocaleDateString()}</div>
+            <h3 style="color:var(--orange); text-align:center; margin-top:0;">🔮 ${u.성명} 친구의 오늘의 운세</h3>
+            
+            <div style="background:#fff3e0; padding:15px; border-radius:15px; margin-bottom:15px; border-left:4px solid var(--orange);">
+                <p style="font-size:13px; color:#e65100; font-weight:bold; margin:0 0 5px 0;">✨ 전체 운세</p>
+                <p style="font-size:15px; font-weight:bold; color:#333; margin:0; line-height:1.4;">"${generalMsgs[seed % generalMsgs.length]}"</p>
+            </div>
+
+            <div style="background:#e3f2fd; padding:15px; border-radius:15px; margin-bottom:15px; border-left:4px solid var(--blue);">
+                <p style="font-size:13px; color:#1565c0; font-weight:bold; margin:0 0 5px 0;">🚢 부산 맞춤 운세</p>
+                <p style="font-size:15px; font-weight:bold; color:#333; margin:0; line-height:1.4;">"${busanMsgs[(seed + 1) % busanMsgs.length]}"</p>
+            </div>
+
+            <div style="background:#fff8e1; padding:15px; border-radius:15px; border:2px dashed var(--gold); text-align:center; margin-bottom:15px;">
+                <p style="font-size:13px; font-weight:bold; color:#f57f17; margin-bottom:10px;">🍀 행운의 숫자 (로또 추천)</p>
+                <div style="display:flex; justify-content:center; gap:3px; flex-wrap:wrap;">
+                    ${nums.map(n => `<span class="lotto-ball">${n}</span>`).join('')}
+                </div>
+            </div>
+
+            <div style="background:#fce4ec; padding:15px; border-radius:15px; border-left:4px solid var(--pink);">
+                <p style="font-size:13px; color:#c2185b; font-weight:bold; margin:0 0 5px 0;">🍴 오늘의 추천 음식</p>
+                <p style="font-size:15px; font-weight:bold; color:#333; margin:0;">${foods[(seed + 2) % foods.length]}</p>
+            </div>
+        `);
     }
 
     function showComments() {
-        resetDisplay(); const list = document.getElementById('listContent'); list.style.display = "block";
-        let html = "<h3>💬 친구들 한마디</h3>";
-        if(commentData.length > 0) [...commentData].reverse().forEach(c => {
-            const k = Object.keys(c); html += `<div style="padding:10px 0;border-bottom:1px solid #eee;"><b>${c[k[1]]}</b>: ${c[k[2]]}</div>`;
-        });
-        list.innerHTML = html;
+        let html = "<h3>💬 친구들의 응원글</h3>";
+        if(commentData.length === 0) html += "<p>아직 글이 없습니다.</p>";
+        else [...commentData].reverse().forEach(c => { const k = Object.keys(c); html += `<div style="padding:10px; border-bottom:1px solid #eee;"><b>${c[k[1]]}</b>: ${c[k[2]]}</div>`; });
+        render(html);
     }
 </script>
 </body>
