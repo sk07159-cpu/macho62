@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -43,7 +44,6 @@
 
         #noticeModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); }
         .modal-content { background-color: white; margin: 20% auto; padding: 25px; border-radius: 25px; width: 85%; max-width: 400px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); animation: slideDown 0.4s; }
-        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .modal-header { font-size: 18px; font-weight: bold; color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .modal-body { font-size: 15px; line-height: 1.6; color: #444; margin-bottom: 20px; white-space: pre-wrap; text-align: left; }
         .modal-close { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; }
@@ -109,7 +109,8 @@
     let memberData = [];
     let commentData = [];
 
-    // 사진 대신 '이모지+그라데이션 배경'으로 세련되게 디자인 변경 (절대 깨지지 않음)
+    // [핵심 변경 사항] 사진(img) 태그를 원천 차단하고, 
+    // 화려한 그라데이션 배경 + 대형 이모지 조합으로 바꿨습니다! 절대 안 깨집니다.
     const busanPlaces = [
         {
             name: "해동용궁사",
@@ -121,37 +122,37 @@
             name: "해운대 (동백섬)",
             emoji: "🏖️😎",
             gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-            desc: "마초62 야들아~ 부산 하면 해운대 아이이가! 동백섬 산책로 슥 걸으면서 '내가 아직 죽지 않았다'는 거 함 보여주자. 누리마루 요기는 옛날에 대빵들이 모여서 회담하던 곳이라는데, 우리 마초들이 가야 급이 딱 맞지! 광안대교 배경으로 폼 잡고 서 있으면 지나가는 처자들이 뒤돌아볼지도 모른다... 착각은 자유고! ㅋㅋㅋ"
+            desc: "마초62 야들아~ 부산 하면 해운대 아이이가! 동백섬 산책로 슥 걸으면서 '내가 아직 죽지 않았다'는 거 함 보여주자. 누리마루 요기는 옛날에 대빵들이 모여서 회담하던 곳이라는데, 우리 마초들이 가야 급이 딱 맞지! 광안대교 배경으로 폼 잡고 서 있으면 지나가는 처자들이 우리 형님들 멋있어서 뒤돌아볼지도 모른다... 물론 착각은 자유고! ㅋㅋㅋ"
         },
         {
             name: "태종대 유람선",
             emoji: "🚢🌊",
             gradient: "linear-gradient(135deg, #09203f 0%, #537895 100%)",
-            desc: "마초62 야들아~ 배 타고 태종대 한 바퀴 돌면 속이 뻥 뚫린다! 기암괴석이 아주 그냥 예술인데, 우리 마초들 맷집만큼 단단하게 생겼다. 유람선 타서 바닷바람 맞으면서 마초들끼리 옛날 첫사랑 이야기나 함 풀어보자. 배 멀미한다고 쫄지 말고! 혹시 아나? 바다 한가운데서 인어공주라도 튀어나올지... ㅋㅋㅋ 아, 물론 상어 조심하고!"
+            desc: "마초62 야들아~ 배 타고 태종대 한 바퀴 돌면 속이 뻥 뚫린다! 기암괴석이 아주 그냥 예술인데, 우리 마초들 맷집만큼 단단하게 생겼다. 유람선 타서 바닷바람 맞으면서 마초들끼리 옛날 첫사랑 이야기나 함 풀어보자. 배 멀미한다고 쫄지 말고! 혹시 아나? 바다 한가운데서 인어공주라도 튀어나와서 우리 형님들 보고 반할지... ㅋㅋㅋ 아, 물론 상어 조심하고!"
         },
         {
             name: "용두산공원",
             emoji: "🗼🌳",
             gradient: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
-            desc: "마초62 야들아~ 부산 원도심의 자존심 용두산 공원이다! 에스컬레이터 있으니까 무릎 걱정 말고 팍팍 올라가자. 부산 타워 올라가면 부산항이 발밑에 쫙 깔리는데, 우리 형님들 인생처럼 시원시원하다! 옛날 남포동에서 껌 좀 씹던 기분 살려서 포즈 함 잡아봐라. 여기서 기운 듬뿍 받으면 전립선 건강에도 좋은 산책길이다! ㅋㅋㅋ"
+            desc: "마초62 야들아~ 부산 원도심의 자존심 용두산 공원이다! 에스컬레이터 있으니까 무릎 걱정 말고 팍팍 올라가자. 부산 타워 올라가면 부산항이 발밑에 쫙 깔리는데, 우리 형님들 인생처럼 시원시원하다! 옛날 남포동에서 껌 좀 씹던 기분 살려서 포즈 함 잡아봐라. 여기서 기운 듬뿍 받으면 오늘 밤 집안 어르신(?)께 칭찬받을지도 모른다... ㅋㅋㅋ 전립선 건강에도 좋은 산책길이다!"
         },
         {
             name: "송도 케이블카",
             emoji: "🚠☁️",
             gradient: "linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)",
-            desc: "마초62 야들아~ 이거 타면 오줌 찔끔 나올지도 모른다! 바다 위를 둥둥 떠서 가는데 발바닥 밑이 훤히 보이는 유리바닥이다! 쫄보들은 밑에 보지 말고 앞만 봐라. ㅋㅋ 송도 바다가 발밑에 쫙 깔리면 니들도 신선 된 기분일 거다. 무섭다고 옆에 친구 손 잡고 울지 말고! 마초답게 팔짱 딱 끼고 경치 구경하는 거다, 알긋나?"
+            desc: "마초62 야들아~ 이거 타면 오줌 찔끔 나올지도 모른다! 바다 위를 둥둥 떠서 가는데 발바닥 밑이 훤히 보이는 유리바닥이다! 쫄보들은 밑에 보지 말고 앞만 봐라. ㅋㅋ 송도 바다가 발밑에 쫙 깔리면 니들도 신선 된 기분일 거다. 무섭다고 옆에 친구 손 잡고 울지 말고! 마초답게 팔짱 딱 끼고 경치 구경하는 거다, 알긋나? 고마 쌔리마 부산 바다 정복하러 가자!"
         },
         {
             name: "구름산책로",
             emoji: "🚶‍♂️🌊",
             gradient: "linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)",
-            desc: "마초62 야들아~ 바다 위를 걷는 기분, 이거 진짜 묘하다! 길쭉하게 뻗은 산책로 따라 걸으면 파도 소리가 발밑에서 찰싹찰싹 들린다. 여기서 마초들끼리 어깨동무하고 단체 사진 한 장 박으면 그림 제대로 나온다! 바닷바람이 거시기(?)에 좋다는 설도 있으니까 심호흡 크게 하고 기운 팍팍 받아라! ㅋㅋㅋ 해외 여행 온 기분 날 끼다!"
+            desc: "마초62 야들아~ 바다 위를 걷는 기분, 이거 진짜 묘하다! 길쭉하게 뻗은 산책로 따라 걸으면 파도 소리가 발밑에서 찰싹찰싹 들린다. 여기서 마초들끼리 어깨동무하고 단체 사진 한 장 박으면 그림 제대로 나온다! 바닷바람이 거시기(?)에 좋다는 설도 있으니까 심호흡 크게 하고 기운 팍팍 받아라! ㅋㅋㅋ 주변 풍경이 억수로 이국적이라 해외 여행 온 기분 날 끼다!"
         },
         {
             name: "국제시장",
             emoji: "🛍️🎬",
             gradient: "linear-gradient(135deg, #ff0844 0%, #ffb199 100%)",
-            desc: "마초62 야들아~ 니들 영화 '국제시장' 봤나? 거기 나오는 시장이 요기다! 없는 거 빼고 다 있다는 국제시장에서 구경 함 하고, 바로 옆 자갈치 시장 가서 싱싱한 고기 구경도 하고! 아지매들 사투리 소리에 정신이 쏙 빠질 끼다. 맛있는 것도 천지니까 배 터질 준비 단디 하고! 부산의 진짜 매력은 요 시장바닥에 다 있다 아이가. 팍팍 즐기자!"
+            desc: "마초62 야들아~ 니들 영화 '국제시장' 봤나? 거기 나오는 시장이 요기다! 없는 거 빼고 다 있다는 국제시장에서 구경 함 하고, 바로 옆 자갈치 시장 가서 싱싱한 고기 구경도 하고! 아지매들 사투리 소리에 정신이 쏙 빠질 끼다. '보이소! 보이소!' 소리 들리면 마초답게 대답해라. 맛있는 것도 천지니까 배 터질 준비 단디 하고! 부산의 진짜 매력은 요 시장바닥에 다 있다 아이가. 팍팍 즐기자!"
         },
         {
             name: "자갈치 시장",
@@ -215,7 +216,7 @@
         window.scrollTo({ top: document.getElementById('displayArea').offsetTop - 20, behavior: 'smooth' });
     }
 
-    // 여행지 선택형 보기 기능 (사진 대신 감성 그라데이션 + 이모지 뷰)
+    // 사진 엑스박스를 방지하기 위한 감성 그라데이션 박스 렌더링
     function showPreTour(index) {
         const place = busanPlaces[index];
         const nextIndex = (index + 1) % busanPlaces.length;
@@ -228,11 +229,13 @@
 
         let contentHtml = `
             <div style="text-align:center;">
-                <h3 style="color:var(--blue); margin-top:0;">📸 부산 명소 미리보기</h3>
+                <h3 style="color:var(--blue); margin-top:0;">📸 부산 명소 엿보기</h3>
                 ${menuHtml}
+                
                 <div style="width:100%; height:200px; border-radius:20px; background:${place.gradient}; display:flex; align-items:center; justify-content:center; font-size:70px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); box-shadow:0 5px 15px rgba(0,0,0,0.2); margin-bottom:15px;">
                     ${place.emoji}
                 </div>
+                
                 <h4 style="font-size:18px; color:#333; margin:10px 0;">[ ${place.name} ]</h4>
                 <div style="background:#f9f9f9; padding:15px; border-radius:15px; font-size:14px; line-height:1.8; text-align:left; color:#444; border:1px solid #eee;">
                     ${place.desc}
@@ -248,7 +251,6 @@
 
     function showMyBusan() {
         const u = findUser(); if(!u) return;
-
         if (u.부산여행 !== "참석") {
             render(`
                 <h3 style="color:var(--navy); text-align:center;">🛳️ ${u.성명} 형님 부산정보</h3>
@@ -259,7 +261,6 @@
             `);
             return;
         }
-
         const myGroup = u.여행조 || "";
         const groupMembers = memberData.filter(m => m.여행조 === myGroup)
             .map(m => m.성명 === u.성명 ? `<b>${m.성명}(나)</b>` : m.성명);
