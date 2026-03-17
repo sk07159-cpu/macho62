@@ -90,10 +90,10 @@
     </div>
 
     <div class="section-box">
-        <div class="section-title">✨ 소통 및 운세</div>
+        <div class="section-title">🎁 어묵선물 및 운세</div>
         <div class="menu-grid">
-            <button class="bg-pink" onclick="window.open('https://forms.gle/qXRdScWhR64Nw5pdA')">응원글 남기기</button>
-            <button class="bg-purple" onclick="showComments()">응원글 보기</button>
+            <button class="bg-pink" onclick="submitAddress()">📍 주소 입력하기</button>
+            <button class="bg-purple" onclick="checkAddress()">👀 전체 주소 확인</button>
             <button class="bg-orange btn-full" style="height:55px; font-size:16px;" onclick="showFortune()">🔮 오늘의 운세 보기</button>
         </div>
     </div>
@@ -126,19 +126,19 @@
             name: "태종대 유람선",
             emoji: "🚢🌊",
             gradient: "linear-gradient(135deg, #09203f 0%, #537895 100%)",
-            desc: "마초62 야들아~ 배 타고 태종대 한 바퀴 돌면 속이 뻥 뚫린다! 기암괴석이 아주 그냥 예술인데, 우리 마초들 맷집만큼 단단하게 생겼다. 유람선 타서 바닷바람 맞으면서 마초들끼리 옛날 첫사랑 이야기나 함 풀어보자. 배 멀미한다고 쫄지 말고! 혹시 아나? 바다 한가운데서 인어공주라도 튀어나와서 우리 형님들 보고 반할지... ㅋㅋㅋ 아, 물론 상어 조심하고!"
+            desc: "마초62 야들아~ 배 타고 태종대 한 바퀴 돌면 속이 뻥 뚫린다! 기암괴석이 아주 그냥 예술인데, 우리 마초들 맷집만큼 단단하게 생겼다. 유람선 타서 바닷바람 맞으면서 마초들끼리 옛날 첫사랑 이야기나 함 풀어보자. 배 멀미한다고 쫄지 말고! 혹시 아나? 바다 한가운데서 인어공주라도 튀어나와서 반할지... ㅋㅋㅋ 아, 물론 상어 조심하고!"
         },
         {
             name: "용두산공원",
             emoji: "🗼🌳",
             gradient: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
-            desc: "마초62 야들아~ 부산 원도심의 자존심 용두산 공원이다! 에스컬레이터 있으니까 무릎 걱정 말고 팍팍 올라가자. 부산 타워 올라가면 부산항이 발밑에 쫙 깔리는데, 우리 형님들 인생처럼 시원시원하다! 옛날 남포동에서 껌 좀 씹던 기분 살려서 포즈 함 잡아봐라. 여기서 기운 듬뿍 받으면 오늘 밤 집안 어르신(?)께 칭찬받을지도 모른다... ㅋㅋㅋ 전립선 건강에도 좋은 산책길이다!"
+            desc: "마초62 야들아~ 부산 원도심의 자존심 용두산 공원이다! 에스컬레이터 있으니까 무릎 걱정 말고 팍팍 올라가자. 부산 타워 올라가면 부산항이 발밑에 쫙 깔리는데, 우리 인생처럼 시원시원하다! 옛날 남포동에서 껌 좀 씹던 기분 살려서 포즈 함 잡아봐라. 여기서 기운 듬뿍 받으면 오늘 밤 집안 어르신(?)께 칭찬받을지도 모른다... ㅋㅋㅋ 전립선 건강에도 좋은 산책길이다!"
         },
         {
             name: "송도 케이블카",
             emoji: "🚠☁️",
             gradient: "linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)",
-            desc: "마초62 야들아~ 이거 타면 오줌 찔끔 나올지도 모른다! 바다 위를 둥둥 떠서 가는데 발바닥 밑이 훤히 보이는 유리바닥이다! 쫄보들은 밑에 보지 말고 앞만 봐라. ㅋㅋ 송도 바다가 발밑에 쫙 깔리면 니들도 신선 된 기분일 거다. 무섭다고 옆에 친구 손 잡고 울지 말고! 마초답게 팔짱 딱 끼고 경치 구경하는 거다, 알긋나? 고마 쌔리마 부산 바다 정복하러 가자!"
+            desc: "마초62 야들아~ 이거 타면 오줌 찔끔 나올지도 모른다! 바다 위를 둥둥 떠서 가는데 발바닥 밑이 훤히 보이는 유리바닥이다! 쫄보들은 밑에 보지 말고 앞만 봐라. ㅋㅋ 송도 바다가 발밑에 쫙 깔리면 니들도 신선 된 기분일 거다. 무섭다고 옆에 칭구 손 잡고 울지 말고! 마초답게 팔짱 딱 끼고 경치 구경하는 거다, 알긋나? 고마 쌔리마 부산 바다 정복하러 가자!"
         },
         {
             name: "구름산책로",
@@ -248,12 +248,14 @@
 
     function showMyBusan() {
         const u = findUser(); if(!u) return;
+        const title = u.성별 === '여' ? '누님' : '형님';
+        
         if (u.부산여행 !== "참석") {
             render(`
-                <h3 style="color:var(--navy); text-align:center;">🛳️ ${u.성명} 형님 부산정보</h3>
+                <h3 style="color:var(--navy); text-align:center;">🛳️ ${u.성명} ${title} 부산정보</h3>
                 <div style="background:#fff3e0; padding:25px 15px; border-radius:15px; border:2px dashed var(--orange); text-align:center;">
-                    <p style="font-size:20px; font-weight:bold; color:#e65100; margin:0;">"형님, 부산여행 같이 갑시데이~"</p>
-                    <p style="font-size:14px; color:#666; margin-top:10px;">아직 신청 내역이 없어. 얼른 합류해줘! 😉</p>
+                    <p style="font-size:20px; font-weight:bold; color:#e65100; margin:0;">"${title}, 부산여행 같이 갑시데이~"</p>
+                    <p style="font-size:14px; color:#666; margin-top:10px;">아직 신청 내역이 없어. 얼른 합류해주이소! 😉</p>
                 </div>
             `);
             return;
@@ -263,7 +265,7 @@
             .map(m => m.성명 === u.성명 ? `<b>${m.성명}(나)</b>` : m.성명);
 
         render(`
-            <h3 style="color:var(--navy); text-align:center;">🛳️ ${u.성명} 형님 부산정보</h3>
+            <h3 style="color:var(--navy); text-align:center;">🛳️ ${u.성명} ${title} 부산정보</h3>
             <div style="background:#e3f2fd; padding:15px; border-radius:15px; border:2px solid var(--navy);">
                 <p style="font-size:18px;">🚆 <b>기차 탑승역: <span style="color:#d32f2f;">${u.탑승역 || '서울역'}</span></b></p>
                 <p>🤝 나의 룸메이트: <b>${u.룸메 || '배정중'}</b></p>
@@ -291,14 +293,14 @@
             html += `</div>`;
         });
 
-        // 정회원(합계 50 이상)이면서 부산여행 불참자인 형님들 색출
         const eomukReceivers = memberData.filter(u => parseInt(u.합계금액 || 0) >= 50 && u.부산여행 !== "참석");
         
-        html += `<h3 style="margin-top:25px; color:var(--orange);">🍢 추가로 부산어묵 받는 친구들 (${eomukReceivers.length}명)</h3>`;
+        html += `<h3 style="margin-top:25px; color:var(--orange);">🍢 추가로 부산어묵 받는 동기들 (${eomukReceivers.length}명)</h3>`;
         html += `<div style="background:#fff3e0; padding:10px; border-radius:10px; border-left:5px solid var(--orange);">`;
         eomukReceivers.sort((a,b)=>a.성명.localeCompare(b.성명)).forEach(m => {
+            const t = m.성별 === '여' ? '누님' : '형님';
             html += `<div style="font-size:13px; display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed #ffe0b2;">
-                <span><b>${m.성명}</b> 형님</span> <span style="color:#e65100; font-weight:bold;">🎁 어묵 당첨!</span>
+                <span><b>${m.성명}</b> ${t}</span> <span style="color:#e65100; font-weight:bold;">🎁 어묵 당첨!</span>
             </div>`;
         });
         html += `</div>`;
@@ -336,18 +338,20 @@
 
     function showSponsors() {
         const sponsors = memberData.filter(u => u.부산찬조 && u.부산찬조 !== "0");
-        let html = `<h3>🤝 협찬 형님들</h3>`;
+        let html = `<h3>🤝 협찬 동기들</h3>`;
         sponsors.sort((a,b) => parseFloat(b.부산찬조) - parseFloat(a.부산찬조)).forEach(u => {
-            html += `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px dashed #ddd;"><span>✨ ${u.성명} 형님</span><b>${u.부산찬조}만원</b></div>`;
+            const t = u.성별 === '여' ? '누님' : '형님';
+            html += `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px dashed #ddd;"><span>✨ ${u.성명} ${t}</span><b>${u.부산찬조}만원</b></div>`;
         });
         render(html);
     }
 
     function showMyFee() {
         const u = findUser(); if(!u) return;
-        render(`<h3>💰 ${u.성명} 형님 회비 정보</h3>
+        const title = u.성별 === '여' ? '누님' : '형님';
+        render(`<h3>💰 ${u.성명} ${title} 회비 정보</h3>
             <p>회비 누계: <b style="font-size:18px; color:var(--primary);">${u.합계금액 || 0}만원</b></p>
-            <p>등급: <b>${parseInt(u.합계금액)>=50 ? '👑 정회원(형님)' : '🏃 분발하쇼(동생)'}</b></p>
+            <p>등급: <b>${parseInt(u.합계금액)>=50 ? '👑 정회원('+title+')' : '🏃 분발하쇼(동생)'}</b></p>
         `);
     }
 
@@ -367,18 +371,19 @@
         const u = findUser(); if(!u) return;
         const today = new Date();
         const seed = today.getDate() + u.성명.charCodeAt(0) + today.getMonth();
+        const title = u.성별 === '여' ? '누님' : '형님';
 
         const generalMsgs = [
             "허리 건강 조심하쇼! 뜻밖의 기쁜 소식이 들려옵니다. 🍀", 
-            "오늘 재물운이 좋으니 마눌님 몰래 비자금 챙기기 좋은 날! ☕", 
+            "오늘 재물운이 좋으니 배우자 몰래 비자금 챙기기 좋은 날! ☕", 
             "마음먹은 일이 순조롭게 풀리는 기분 좋은 날입니다. 😊", 
-            "가는 곳마다 형님 대접받고 귀인을 만날 운세입니다. 🤝"
+            `가는 곳마다 ${title} 대접받고 귀인을 만날 운세입니다. 🤝`
         ];
 
         const busanMsgs = [
             "부산 장어 꼬리처럼 기운이 뻗치는 하루입니다! 🌊", 
             "송도 케이블카처럼 기분이 하늘로 비상할 운세입니다! 🚠", 
-            "자갈치 시장의 활기찬 기운이 형님께 가득합니다! 🐟", 
+            `자갈치 시장의 활기찬 기운이 ${title}께 가득합니다! 🐟`, 
             "용두산 공원의 정기를 받아 오늘 밤 죽여줄 겁니다! ⛰️", 
             "해운대 백사장처럼 넓고 풍요로운 행운이 따릅니다! ✨"
         ];
@@ -421,7 +426,7 @@
 
         render(`
             <div style="text-align:right; font-size:12px; color:#999; margin-bottom:10px;">📅 ${today.toLocaleDateString()}</div>
-            <h3 style="color:var(--orange); text-align:center; margin-top:0;">🔮 ${u.성명} 형님의 오늘의 운세</h3>
+            <h3 style="color:var(--orange); text-align:center; margin-top:0;">🔮 ${u.성명} ${title}의 오늘의 운세</h3>
             
             <div style="background:#fff3e0; padding:15px; border-radius:15px; margin-bottom:15px; border-left:4px solid var(--orange);">
                 <p style="font-size:13px; color:#e65100; font-weight:bold; margin:0 0 5px 0;">✨ 전체 운세</p>
@@ -449,11 +454,119 @@
         `);
     }
 
-    function showComments() {
-        let html = "<h3>💬 형님들의 응원글</h3>";
-        if(commentData.length === 0) html += "<p>아직 글이 없습니다.</p>";
-        else [...commentData].reverse().forEach(c => { const k = Object.keys(c); html += `<div style="padding:10px; border-bottom:1px solid #eee;"><b>${c[k[1]]}</b>: ${c[k[2]]}</div>`; });
-        render(html);
+    function submitAddress() {
+        const u = findUser(); if(!u) return;
+        const title = u.성별 === '여' ? '누님' : '형님';
+        const isTarget = parseInt(u.합계금액 || 0) >= 50 && u.부산여행 !== "참석";
+
+        if(isTarget) {
+            window.open('https://forms.gle/qXRdScWhR64Nw5pdA');
+        } else {
+            render(`
+                <h3 style="color:var(--pink); text-align:center;">❌ 배송 대상자가 아닙니더</h3>
+                <div style="background:#ffebee; padding:15px; border-radius:15px; text-align:center; border:2px dashed var(--pink);">
+                    <p style="font-size:15px; font-weight:bold; color:#d32f2f;">${title}은(는) 어묵 배송 대상자가 아입니더!</p>
+                    <p style="font-size:13px; color:#555; margin-top:5px;">(정회원이면서 부산여행 불참하시는 동기들만 해당됩니더)</p>
+                </div>
+            `);
+        }
+    }
+
+    function checkAddress() {
+        const addressMap = {};
+        
+        commentData.forEach(c => {
+            const keys = Object.keys(c);
+            const name = c[keys[1]];
+            const address = c[keys[2]];
+            if(name && address) {
+                addressMap[name] = address;
+            }
+        });
+
+        const names = Object.keys(addressMap);
+
+        if(names.length === 0) {
+            render(`
+                <h3 style="color:var(--purple); text-align:center;">📦 전체 배송지 확인</h3>
+                <div style="background:#f3e5f5; padding:15px; border-radius:15px; text-align:center; border:2px dashed var(--purple);">
+                    <p style="font-size:15px; font-weight:bold; color:#7b1fa2;">아직 입력된 주소가 없습니더.</p>
+                </div>
+            `);
+            return;
+        }
+
+        let eligibleHtml = '';
+        let ineligibleHtml = '';
+        let eligibleCount = 0;
+        let ineligibleCount = 0;
+
+        names.sort().forEach(name => {
+            const u = memberData.find(m => m.성명 === name);
+            const address = addressMap[name];
+            
+            let title = "친구";
+            if (u) {
+                title = u.성별 === '여' ? '누님' : '형님';
+            }
+
+            if(!u) {
+                ineligibleCount++;
+                ineligibleHtml += `
+                    <div style="padding: 8px 0; border-bottom: 1px dashed #ccc;">
+                        <span style="font-weight:bold; color:#d32f2f;">👤 ${name} (명단에 읎음)</span>
+                        <span style="font-size:13px; color:#555; display:block;">${address}</span>
+                        <span style="font-size:12px; color:#d32f2f; font-weight:bold;">❌ 못받는 이유: 마초62 명단에 없는 이름입니더!</span>
+                    </div>`;
+                return;
+            }
+
+            const isPerfect = parseInt(u.합계금액 || 0) >= 50;
+            const isGoing = u.부산여행 === "참석";
+
+            if (isPerfect && !isGoing) {
+                eligibleCount++;
+                eligibleHtml += `
+                    <div style="padding: 8px 0; border-bottom: 1px dashed #ce93d8;">
+                        <span style="font-weight:bold; color:#4a148c; display:block; margin-bottom:3px;">👤 ${name} ${title}</span>
+                        <span style="font-size:14px; color:#333;">${address}</span>
+                    </div>`;
+            } else {
+                ineligibleCount++;
+                let reason = "";
+                if (isGoing) reason = "부산여행 가시잖아예! (가서 무이소 😋)";
+                else if (!isPerfect) reason = "아직 정회원이 아입니더 (회비 채워주이소 🙏)";
+                
+                ineligibleHtml += `
+                    <div style="padding: 8px 0; border-bottom: 1px dashed #ccc;">
+                        <span style="font-weight:bold; color:#666;">👤 ${name} ${title}</span>
+                        <span style="font-size:13px; color:#888; display:block;">${address}</span>
+                        <span style="font-size:12px; color:#d32f2f; font-weight:bold;">❌ 못받는 이유: ${reason}</span>
+                    </div>`;
+            }
+        });
+
+        let finalHtml = `<h3 style="color:var(--purple); text-align:center;">📦 전체 배송지 확인</h3>`;
+
+        finalHtml += `
+            <div style="background:#f3e5f5; padding:15px; border-radius:15px; border:2px solid var(--purple); text-align:left; margin-bottom:15px;">
+                <p style="font-size:14px; color:#7b1fa2; font-weight:bold; margin:0 0 10px 0;">🎁 어묵 받을 동기들 (${eligibleCount}명)</p>
+                ${eligibleCount > 0 ? eligibleHtml : '<p style="font-size:13px; color:#555;">아직 대상자 중에는 적으신 분이 없네예.</p>'}
+            </div>
+        `;
+
+        if (ineligibleCount > 0) {
+            finalHtml += `
+                <div style="background:#f5f5f5; padding:15px; border-radius:15px; border:2px dashed #999; text-align:left;">
+                    <p style="font-size:14px; color:#555; font-weight:bold; margin:0 0 10px 0;">😢 아쉽지만 못 받는 동기들 (${ineligibleCount}명)</p>
+                    ${ineligibleHtml}
+                </div>
+            `;
+        }
+
+        finalHtml += `<p style="font-size:12px; text-align:center; color:#888; margin-top:10px;">* 주소가 틀렸으면 '주소 입력하기'로 다시 적어주이소. (가장 최근 주소 적용)</p>`;
+        
+        render(finalHtml);
     }
 </script>
 </body>
