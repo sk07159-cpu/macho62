@@ -200,11 +200,17 @@
         document.getElementById("countdown").innerText = `🚢 부산행 ${d}일 ${h}:${m}:${s}`;
     }
 
+    // 이름 미입력 / 오타 시 찰진 부산 사투리 경고창!
     function findUser() {
         const name = document.getElementById('nameInput').value.trim();
-        if(!name) { alert("이름을 입력해주세요."); return null; }
+        if(!name) { 
+            alert("아이고! 이름부터 단디 적어주이소! 누군지 알아야 안내를 해드리지예~ ㅋㅋㅋ"); 
+            return null; 
+        }
         const user = memberData.find(u => u.성명 === name);
-        if(!user) alert("명단에 없습니다.");
+        if(!user) {
+            alert("마초62 명단에 없는 이름입니더! 오타 났는지 다시 함 단디 확인해주이소!");
+        }
         return user;
     }
 
@@ -295,7 +301,8 @@
 
         const eomukReceivers = memberData.filter(u => parseInt(u.합계금액 || 0) >= 50 && u.부산여행 !== "참석");
         
-        html += `<h3 style="margin-top:25px; color:var(--orange);">🍢 추가로 부산어묵 받는 동기들 (${eomukReceivers.length}명)</h3>`;
+        // 제목 변경 완료
+        html += `<h3 style="margin-top:25px; color:var(--orange);">🍢 추가로 부산어묵 받는 형님/누님들 (${eomukReceivers.length}명)</h3>`;
         html += `<div style="background:#fff3e0; padding:10px; border-radius:10px; border-left:5px solid var(--orange);">`;
         eomukReceivers.sort((a,b)=>a.성명.localeCompare(b.성명)).forEach(m => {
             const t = m.성별 === '여' ? '누님' : '형님';
@@ -338,7 +345,8 @@
 
     function showSponsors() {
         const sponsors = memberData.filter(u => u.부산찬조 && u.부산찬조 !== "0");
-        let html = `<h3>🤝 협찬 동기들</h3>`;
+        // 제목 변경 완료
+        let html = `<h3>🤝 협찬 형님/누님들</h3>`;
         sponsors.sort((a,b) => parseFloat(b.부산찬조) - parseFloat(a.부산찬조)).forEach(u => {
             const t = u.성별 === '여' ? '누님' : '형님';
             html += `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px dashed #ddd;"><span>✨ ${u.성명} ${t}</span><b>${u.부산찬조}만원</b></div>`;
@@ -454,7 +462,6 @@
         `);
     }
 
-    // ⭐ 누구나 주소 입력 가능하도록 열어둠 + 찰진 맞춤 멘트!
     function submitAddress() {
         const u = findUser(); if(!u) return;
         const title = u.성별 === '여' ? '누님' : '형님';
@@ -465,7 +472,7 @@
         // 일단 구글 폼 열어서 주소는 무조건 받습니더!
         window.open('https://forms.gle/qXRdScWhR64Nw5pdA');
 
-        // 그리고 화면에는 상황에 맞는 멘트를 똭!
+        // 은(는) 삭제하고 '은'으로 통일 완료
         if(isTarget) {
             render(`
                 <h3 style="color:var(--primary); text-align:center;">🍢 어묵 배송 대상자 맞심더!</h3>
@@ -486,9 +493,9 @@
             }
             
             render(`
-                <h3 style="color:var(--orange); text-align:center;">📝 주소 등록 완료 (어묵은 안 됨!)</h3>
+                <h3 style="color:var(--orange); text-align:center;">📝 주소 등록 안내</h3>
                 <div style="background:#fff3e0; padding:15px; border-radius:15px; text-align:center; border:2px dashed var(--orange);">
-                    <p style="font-size:15px; font-weight:bold; color:#e65100;">${u.성명} ${title}은(는) ${reason}</p>
+                    <p style="font-size:15px; font-weight:bold; color:#e65100;">${u.성명} ${title}은 ${reason}</p>
                     <p style="font-size:14px; font-weight:bold; color:#d32f2f; margin-top:5px;">그래서 이번 선물 받을 대상이 아닙니더... ${action}</p>
                     <p style="font-size:12px; color:#666; margin-top:10px;">(그래도 우리 마초62 주소록엔 귀하게 잘 모셔두겠심더. 새 창에서 주소는 꼭 쳐주이소!)</p>
                 </div>
@@ -574,7 +581,7 @@
 
         finalHtml += `
             <div style="background:#f3e5f5; padding:15px; border-radius:15px; border:2px solid var(--purple); text-align:left; margin-bottom:15px;">
-                <p style="font-size:14px; color:#7b1fa2; font-weight:bold; margin:0 0 10px 0;">🎁 어묵 받을 동기들 (${eligibleCount}명)</p>
+                <p style="font-size:14px; color:#7b1fa2; font-weight:bold; margin:0 0 10px 0;">🎁 어묵 받을 형님/누님들 (${eligibleCount}명)</p>
                 ${eligibleCount > 0 ? eligibleHtml : '<p style="font-size:13px; color:#555;">아직 대상자 중에는 적으신 분이 없네예.</p>'}
             </div>
         `;
@@ -582,7 +589,7 @@
         if (ineligibleCount > 0) {
             finalHtml += `
                 <div style="background:#f5f5f5; padding:15px; border-radius:15px; border:2px dashed #999; text-align:left;">
-                    <p style="font-size:14px; color:#555; font-weight:bold; margin:0 0 10px 0;">😢 아쉽지만 못 받는 동기들 (${ineligibleCount}명)</p>
+                    <p style="font-size:14px; color:#555; font-weight:bold; margin:0 0 10px 0;">😢 아쉽지만 못 받는 형님/누님들 (${ineligibleCount}명)</p>
                     ${ineligibleHtml}
                 </div>
             `;
