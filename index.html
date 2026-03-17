@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -44,6 +43,7 @@
 
         #noticeModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); }
         .modal-content { background-color: white; margin: 20% auto; padding: 25px; border-radius: 25px; width: 85%; max-width: 400px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); animation: slideDown 0.4s; }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .modal-header { font-size: 18px; font-weight: bold; color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .modal-body { font-size: 15px; line-height: 1.6; color: #444; margin-bottom: 20px; white-space: pre-wrap; text-align: left; }
         .modal-close { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; }
@@ -109,8 +109,6 @@
     let memberData = [];
     let commentData = [];
 
-    // [핵심 변경 사항] 사진(img) 태그를 원천 차단하고, 
-    // 화려한 그라데이션 배경 + 대형 이모지 조합으로 바꿨습니다! 절대 안 깨집니다.
     const busanPlaces = [
         {
             name: "해동용궁사",
@@ -216,7 +214,6 @@
         window.scrollTo({ top: document.getElementById('displayArea').offsetTop - 20, behavior: 'smooth' });
     }
 
-    // 사진 엑스박스를 방지하기 위한 감성 그라데이션 박스 렌더링
     function showPreTour(index) {
         const place = busanPlaces[index];
         const nextIndex = (index + 1) % busanPlaces.length;
@@ -293,6 +290,19 @@
             });
             html += `</div>`;
         });
+
+        // 정회원(합계 50 이상)이면서 부산여행 불참자인 형님들 색출
+        const eomukReceivers = memberData.filter(u => parseInt(u.합계금액 || 0) >= 50 && u.부산여행 !== "참석");
+        
+        html += `<h3 style="margin-top:25px; color:var(--orange);">🍢 추가로 부산어묵 받는 친구들 (${eomukReceivers.length}명)</h3>`;
+        html += `<div style="background:#fff3e0; padding:10px; border-radius:10px; border-left:5px solid var(--orange);">`;
+        eomukReceivers.sort((a,b)=>a.성명.localeCompare(b.성명)).forEach(m => {
+            html += `<div style="font-size:13px; display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed #ffe0b2;">
+                <span><b>${m.성명}</b> 형님</span> <span style="color:#e65100; font-weight:bold;">🎁 어묵 당첨!</span>
+            </div>`;
+        });
+        html += `</div>`;
+
         render(html);
     }
 
@@ -391,6 +401,24 @@
         }
         nums.sort((a,b)=>a-b);
 
+        let luckyTicketHtml = ``;
+        if (u.부산여행 === "참석") {
+            luckyTicketHtml = `
+            <div style="background:#e8f5e9; padding:15px; border-radius:15px; border:2px solid var(--primary); text-align:center; margin-top:15px;">
+                <p style="font-size:14px; font-weight:bold; color:#2e7d32; margin-bottom:10px;">🎟️ 나의 행운권</p>
+                <p style="font-size:15px; font-weight:bold; color:#333; line-height:1.4;">"${u.성명}"님은 대상에 당첨되었습니다.<br>상품은 부산여행에서 쓰실 고급모자와 스카프 입니다.<br>대박 축하합니다 🎉</p>
+                <a href="https://drive.google.com/file/d/10sX9PN2fSdwueTW-dxq6OtIBV8PdHsNH/view?usp=sharing" target="_blank" style="display:inline-block; margin-top:15px; padding:10px 20px; background:var(--pink); color:white; text-decoration:none; border-radius:10px; font-weight:bold; font-size:14px;">🎁 상품 사진 확인하기</a>
+            </div>
+            `;
+        } else {
+            luckyTicketHtml = `
+            <div style="background:#f0f0f0; padding:15px; border-radius:15px; border:2px dashed #ccc; text-align:center; margin-top:15px;">
+                <p style="font-size:14px; font-weight:bold; color:#666; margin-bottom:10px;">🎟️ 나의 행운권</p>
+                <p style="font-size:15px; font-weight:bold; color:#555;">"${u.성명}"님은 아쉽지만 다음 기회에... 😢</p>
+            </div>
+            `;
+        }
+
         render(`
             <div style="text-align:right; font-size:12px; color:#999; margin-bottom:10px;">📅 ${today.toLocaleDateString()}</div>
             <h3 style="color:var(--orange); text-align:center; margin-top:0;">🔮 ${u.성명} 형님의 오늘의 운세</h3>
@@ -416,6 +444,8 @@
                 <p style="font-size:13px; color:#c2185b; font-weight:bold; margin:0 0 5px 0;">🍴 오늘의 추천 음식</p>
                 <p style="font-size:15px; font-weight:bold; color:#333; margin:0;">${foods[(seed + 2) % foods.length]}</p>
             </div>
+
+            ${luckyTicketHtml}
         `);
     }
 
