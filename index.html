@@ -200,16 +200,15 @@
         document.getElementById("countdown").innerText = `🚢 부산행 ${d}일 ${h}:${m}:${s}`;
     }
 
-    // 이름 미입력 / 오타 시 찰진 부산 사투리 경고창!
     function findUser() {
         const name = document.getElementById('nameInput').value.trim();
         if(!name) { 
             alert("아이고! 이름부터 단디 적어주이소! 누군지 알아야 안내를 해드리지예~ ㅋㅋㅋ"); 
             return null; 
         }
-        const user = memberData.find(u => u.성명 === name);
+        const user = memberData.find(u => u.성명.trim() === name);
         if(!user) {
-            alert("마초62 명단에 없는 이름입니더! 오타 났는지 다시 함 단디 확인해주이소!");
+            alert("마초62 명단에 없는 이름입니더! 혹시 오타가 났는지 다시 함 단디 확인해주이소!");
         }
         return user;
     }
@@ -301,7 +300,6 @@
 
         const eomukReceivers = memberData.filter(u => parseInt(u.합계금액 || 0) >= 50 && u.부산여행 !== "참석");
         
-        // 제목 변경 완료
         html += `<h3 style="margin-top:25px; color:var(--orange);">🍢 추가로 부산어묵 받는 형님/누님들 (${eomukReceivers.length}명)</h3>`;
         html += `<div style="background:#fff3e0; padding:10px; border-radius:10px; border-left:5px solid var(--orange);">`;
         eomukReceivers.sort((a,b)=>a.성명.localeCompare(b.성명)).forEach(m => {
@@ -345,7 +343,6 @@
 
     function showSponsors() {
         const sponsors = memberData.filter(u => u.부산찬조 && u.부산찬조 !== "0");
-        // 제목 변경 완료
         let html = `<h3>🤝 협찬 형님/누님들</h3>`;
         sponsors.sort((a,b) => parseFloat(b.부산찬조) - parseFloat(a.부산찬조)).forEach(u => {
             const t = u.성별 === '여' ? '누님' : '형님';
@@ -469,10 +466,8 @@
         const isGoing = u.부산여행 === "참석";
         const isTarget = isPerfect && !isGoing;
 
-        // 일단 구글 폼 열어서 주소는 무조건 받습니더!
         window.open('https://forms.gle/qXRdScWhR64Nw5pdA');
 
-        // 은(는) 삭제하고 '은'으로 통일 완료
         if(isTarget) {
             render(`
                 <h3 style="color:var(--primary); text-align:center;">🍢 어묵 배송 대상자 맞심더!</h3>
@@ -485,19 +480,16 @@
             let reason = "";
             let action = "";
             if(isGoing) {
-                reason = "이번 부산여행에 같이 가시잖아예!";
-                action = "어묵은 부산 가서 배 터지게 드시소! 😆";
+                reason = "부산가서 드이소!";
             } else if(!isPerfect) {
-                reason = "아직 회비가 모자란 동생(?)이십니더!";
-                action = "퍼뜩 회비 내고 정회원이 되시소! 🙏";
+                reason = "나의 회비를 확인하시고 정회원이 된 후 정회원의 혜택을 누리세요.";
             }
             
             render(`
                 <h3 style="color:var(--orange); text-align:center;">📝 주소 등록 안내</h3>
                 <div style="background:#fff3e0; padding:15px; border-radius:15px; text-align:center; border:2px dashed var(--orange);">
-                    <p style="font-size:15px; font-weight:bold; color:#e65100;">${u.성명} ${title}은 ${reason}</p>
-                    <p style="font-size:14px; font-weight:bold; color:#d32f2f; margin-top:5px;">그래서 이번 선물 받을 대상이 아닙니더... ${action}</p>
-                    <p style="font-size:12px; color:#666; margin-top:10px;">(그래도 우리 마초62 주소록엔 귀하게 잘 모셔두겠심더. 새 창에서 주소는 꼭 쳐주이소!)</p>
+                    <p style="font-size:14px; font-weight:bold; color:#d32f2f; margin-top:5px;">❌ ${u.성명} ${title}은 못받는 이유: ${reason}</p>
+                    <p style="font-size:12px; color:#666; margin-top:10px;">(그래도 우리 마초62 주소록엔 귀하게 잘 모셔두겠심더. 새 창에서 주소는 꼬옥 쳐주이소!)</p>
                 </div>
             `);
         }
@@ -508,10 +500,11 @@
         
         commentData.forEach(c => {
             const keys = Object.keys(c);
-            const name = c[keys[1]];
-            const address = c[keys[2]];
-            if(name && address) {
-                addressMap[name] = address;
+            const nameRaw = c[keys[1]];
+            const addressRaw = c[keys[2]];
+            if(nameRaw && addressRaw) {
+                const name = nameRaw.toString().trim();
+                addressMap[name] = addressRaw.toString().trim();
             }
         });
 
@@ -533,7 +526,7 @@
         let ineligibleCount = 0;
 
         names.sort().forEach(name => {
-            const u = memberData.find(m => m.성명 === name);
+            const u = memberData.find(m => m.성명.trim() === name);
             const address = addressMap[name];
             
             let title = "친구";
@@ -545,9 +538,9 @@
                 ineligibleCount++;
                 ineligibleHtml += `
                     <div style="padding: 8px 0; border-bottom: 1px dashed #ccc;">
-                        <span style="font-weight:bold; color:#d32f2f;">👤 ${name} (명단에 읎음)</span>
-                        <span style="font-size:13px; color:#555; display:block;">${address}</span>
-                        <span style="font-size:12px; color:#d32f2f; font-weight:bold;">❌ 못받는 이유: 마초62 명단에 없는 이름입니더!</span>
+                        <span style="font-weight:bold; color:#666;">👤 ${name} (명단 확인 불가)</span>
+                        <span style="font-size:13px; color:#888; display:block; margin:3px 0;">${address}</span>
+                        <span style="font-size:12px; color:#d32f2f; font-weight:bold;">❌ 못받는 이유: 마초62 명단에 없는 이름이거나 오타입니더!</span>
                     </div>`;
                 return;
             }
@@ -565,13 +558,13 @@
             } else {
                 ineligibleCount++;
                 let reason = "";
-                if (isGoing) reason = "부산여행 가시잖아예! (가서 무이소 😋)";
-                else if (!isPerfect) reason = "아직 정회원이 아입니더 (회비 채워주이소 🙏)";
+                if (isGoing) reason = "부산가서 드이소!";
+                else if (!isPerfect) reason = "나의 회비를 확인하시고 정회원이 된 후 정회원의 혜택을 누리세요.";
                 
                 ineligibleHtml += `
                     <div style="padding: 8px 0; border-bottom: 1px dashed #ccc;">
                         <span style="font-weight:bold; color:#666;">👤 ${name} ${title}</span>
-                        <span style="font-size:13px; color:#888; display:block;">${address}</span>
+                        <span style="font-size:13px; color:#888; display:block; margin:3px 0;">${address}</span>
                         <span style="font-size:12px; color:#d32f2f; font-weight:bold;">❌ 못받는 이유: ${reason}</span>
                     </div>`;
             }
@@ -590,6 +583,11 @@
             finalHtml += `
                 <div style="background:#f5f5f5; padding:15px; border-radius:15px; border:2px dashed #999; text-align:left;">
                     <p style="font-size:14px; color:#555; font-weight:bold; margin:0 0 10px 0;">😢 아쉽지만 못 받는 형님/누님들 (${ineligibleCount}명)</p>
+                    
+                    <div style="background:#e3f2fd; padding:12px; border-radius:10px; margin-bottom:15px; text-align:center; border: 1px solid #bbdefb;">
+                        <span style="font-size:13px; color:#1565c0; font-weight:bold; line-height:1.5;">💌 비록 어묵은 못 받으시더라도, 마초62 주소록을 만들기 위한 소중한 일에 참여해 주셔서 억수로 감사합니데이!</span>
+                    </div>
+                    
                     ${ineligibleHtml}
                 </div>
             `;
